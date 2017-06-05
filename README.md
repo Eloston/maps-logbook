@@ -1,5 +1,7 @@
 # Maps Logbook
 
+**NOTE: This app is not in a usable state yet**
+
 Save locations and routes from Google Maps via the sharing functionality.
 
 Google Maps does not need to be signed-in for this app to function. But this app will function normally if Google Maps is signed-in.
