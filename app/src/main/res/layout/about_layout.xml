@@ -47,16 +47,10 @@
     <TextView
         android:textSize="16sp"
         android:gravity="center"
-        android:id="@+id/aboutContactMe"
         android:layout_marginTop="4dp"
-        android:autoLink="email"
+        android:autoLink="web"
         android:linksClickable="true"
-        android:text="@string/email_address"
+        android:text="@string/github_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
-
-
-
-
 </LinearLayout>

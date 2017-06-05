@@ -18,7 +18,6 @@ public class AboutActivity extends AppCompatActivity {
     private TextView mVersionTextView;
     private String appVersion = "0.1";
     private Toolbar toolbar;
-    private TextView contactMe;
     String theme;
 //    private UUID mId;
 
@@ -57,7 +56,6 @@ public class AboutActivity extends AppCompatActivity {
         mVersionTextView = (TextView)findViewById(R.id.aboutVersionTextView);
         mVersionTextView.setText(String.format(getResources().getString(R.string.app_version), appVersion));
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-        contactMe = (TextView)findViewById(R.id.aboutContactMe);
 
         setSupportActionBar(toolbar);
         if(getSupportActionBar()!=null){
