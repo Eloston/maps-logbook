@@ -52,14 +52,13 @@
             android:text="@string/snooze"
             android:textSize="16sp" />
 
-        <fr.ganfra.materialspinner.MaterialSpinner
+        <Spinner
             android:id="@+id/todoReminderSnoozeSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="16dp"
             android:layout_weight="1.5"
-            app:ms_highlightColor="?attr/colorAccent"
             />
 
 

@@ -1,46 +1,41 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     signingConfigs {
         release {
-            keyAlias ''
-            keyPassword ''
-            storeFile file('/Users/avjindersinghsekhon/androidapps.jks')
-            storePassword ''
+            keyAlias 'AndroidReleaseKey'
+            keyPassword '123456'
+            storeFile file('../../release.keystore')
+            storePassword '123456'
         }
     }
+    // TODO: Move these duplicates to root project build.gradle
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "24.0.0"
     defaultConfig {
-        applicationId "com.avjindersinghsekhon.minimaltodo"
+        applicationId "com.github.eloston.mapslogbook"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.2"
+        versionCode 1
+        versionName "0.1"
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
-    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
     lintOptions {
         abortOnError false
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services-analytics:7.8.0'
-    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
-    compile 'com.github.ganfra:material-spinner:1.1.0'
-    compile 'com.wdullaer:materialdatetimepicker:1.5.1'
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'com.github.ganfra:material-spinner:1.1.0'
-    compile 'com.android.support:recyclerview-v7:23.1.0'
-    compile 'com.android.support:design:23.1.0'
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:support-v13:23.1.0'
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':third_party:textdrawable')
+    compile 'com.android.support:recyclerview-v7:23.+'
+    compile 'com.android.support:design:23.+'
+    compile 'com.android.support:appcompat-v7:23.+'
+    compile 'com.android.support:support-v13:23.+'
 }

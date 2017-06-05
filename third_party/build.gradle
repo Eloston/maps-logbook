@@ -1,0 +1,6 @@
+//subprojects {
+//    // Output all jars to the same location
+//    tasks.withType(Jar) {
+//        destinationDir = file('$rootDir/third_party/build')
+//    }
+//}

@@ -26,15 +26,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class AddToDoActivity extends AppCompatActivity implements  DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+public class AddToDoActivity extends AppCompatActivity {
     private Date mLastEdited;
     private EditText mToDoTextBodyEditText;
     private SwitchCompat mToDoDateSwitch;
@@ -64,18 +60,10 @@ public class AddToDoActivity extends AppCompatActivity implements  DatePickerDia
     private boolean setTimeButtonClickedOnce = false;
     private LinearLayout mContainerLayout;
     private String theme;
-    AnalyticsApplication app;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        app.send(this);
-    }
 
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        app = (AnalyticsApplication)getApplication();
 //        setContentView(R.layout.new_to_do_layout);
         //Need references to these to change them during light/dark mode
         ImageButton reminderIconImageButton;
@@ -203,14 +191,6 @@ public class AddToDoActivity extends AppCompatActivity implements  DatePickerDia
         mToDoDateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    app.send(this, "Action", "Reminder Set");
-                }
-                else{
-                    app.send(this, "Action", "Reminder Removed");
-
-                }
-
                 if (!isChecked) {
                     mUserReminderDate = null;
                 }
@@ -229,11 +209,9 @@ public class AddToDoActivity extends AppCompatActivity implements  DatePickerDia
                     mToDoTextBodyEditText.setError(getString(R.string.todo_error));
                 }
                 else if(mUserReminderDate!=null && mUserReminderDate.before(new Date())){
-                    app.send(this, "Action", "Date in the Past");
                     makeResult(RESULT_CANCELED);
                 }
                 else{
-                    app.send(this, "Action", "Make Todo");
                     makeResult(RESULT_OK);
                     finish();
                 }
@@ -258,19 +236,6 @@ public class AddToDoActivity extends AppCompatActivity implements  DatePickerDia
                 else{
                     date = new Date();
                 }
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-
-                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(AddToDoActivity.this, year, month, day);
-                if(theme.equals(MainActivity.DARKTHEME)){
-                    datePickerDialog.setThemeDark(true);
-                }
-                datePickerDialog.show(getFragmentManager(), "DateFragment");
-
             }
         });
 
@@ -288,16 +253,6 @@ public class AddToDoActivity extends AppCompatActivity implements  DatePickerDia
                 else{
                     date = new Date();
                 }
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                int minute = calendar.get(Calendar.MINUTE);
-
-                TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(AddToDoActivity.this, hour, minute, DateFormat.is24HourFormat(AddToDoActivity.this));
-                if(theme.equals(MainActivity.DARKTHEME)){
-                    timePickerDialog.setThemeDark(true);
-                }
-                timePickerDialog.show(getFragmentManager(), "TimeFragment");
             }
         });
 
@@ -578,7 +533,6 @@ public class AddToDoActivity extends AppCompatActivity implements  DatePickerDia
         switch (item.getItemId()){
             case android.R.id.home:
                 if(NavUtils.getParentActivityName(this)!=null){
-                    app.send(this, "Action", "Discard Todo");
                     makeResult(RESULT_CANCELED);
                     NavUtils.navigateUpFromSameTask(this);
                 }
@@ -593,16 +547,6 @@ public class AddToDoActivity extends AppCompatActivity implements  DatePickerDia
     public static String formatDate(String formatString, Date dateToFormat){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatString);
         return simpleDateFormat.format(dateToFormat);
-    }
-
-    @Override
-    public void onTimeSet(RadialPickerLayout radialPickerLayout, int hour, int minute) {
-        setTime(hour, minute);
-    }
-
-    @Override
-    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
-        setDate(year, month, day);
     }
 
     public void setEnterDateLayoutVisible(boolean checked){
