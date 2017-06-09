@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release {
-            keyAlias 'AndroidReleaseKey'
-            keyPassword '123456'
-            storeFile file('../../release.keystore')
-            storePassword '123456'
+            keyAlias "${key_alias}"
+            keyPassword "${key_password}"
+            storeFile file("${keystore}")
+            storePassword "${keystore_password}"
         }
     }
     // TODO: Move these duplicates to root project build.gradle
