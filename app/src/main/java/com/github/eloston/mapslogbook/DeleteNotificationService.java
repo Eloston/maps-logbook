@@ -1,4 +1,4 @@
-package com.example.avjindersinghsekhon.minimaltodo;
+package com.github.eloston.mapslogbook;
 
 import android.app.IntentService;
 import android.content.Intent;

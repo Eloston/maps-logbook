@@ -1,4 +1,4 @@
-package com.example.avjindersinghsekhon.minimaltodo;
+package com.github.eloston.mapslogbook;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;

@@ -1,4 +1,4 @@
-package com.example.avjindersinghsekhon.minimaltodo;
+package com.github.eloston.mapslogbook;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mAddToDoItemFAB;
     private ArrayList<ToDoItem> mToDoItemsArrayList;
     private CoordinatorLayout mCoordLayout;
-    public static final String TODOITEM = "com.avjindersinghsekhon.com.avjindersinghsekhon.minimaltodo.MainActivity";
+    public static final String TODOITEM = "com.github.eloston.com.github.eloston.mapslogbook.MainActivity";
     private BasicListAdapter adapter;
     private static final int REQUEST_ID_TODO_ITEM = 100;
     private ToDoItem mJustDeletedToDoItem;
@@ -53,15 +53,15 @@ public class MainActivity extends AppCompatActivity {
     private StoreRetrieveData storeRetrieveData;
     public ItemTouchHelper itemTouchHelper;
     private CustomRecyclerScrollViewListener customRecyclerScrollViewListener;
-    public static final String SHARED_PREF_DATA_SET_CHANGED = "com.avjindersekhon.datasetchanged";
-    public static final String CHANGE_OCCURED = "com.avjinder.changeoccured";
+    public static final String SHARED_PREF_DATA_SET_CHANGED = "com.github.eloston.datasetchanged";
+    public static final String CHANGE_OCCURED = "com.github.eloston.changeoccured";
     private int mTheme = -1;
     private String theme = "name_of_the_theme";
-    public static final String THEME_PREFERENCES = "com.avjindersekhon.themepref";
-    public static final String RECREATE_ACTIVITY = "com.avjindersekhon.recreateactivity";
-    public static final String THEME_SAVED = "com.avjindersekhon.savedtheme";
-    public static final String DARKTHEME = "com.avjindersekon.darktheme";
-    public static final String LIGHTTHEME = "com.avjindersekon.lighttheme";
+    public static final String THEME_PREFERENCES = "com.github.eloston.themepref";
+    public static final String RECREATE_ACTIVITY = "com.github.eloston.recreateactivity";
+    public static final String THEME_SAVED = "com.github.eloston.savedtheme";
+    public static final String DARKTHEME = "com.github.eloston.darktheme";
+    public static final String LIGHTTHEME = "com.github.eloston.lighttheme";
     private String[] testStrings = {"Clean my room",
             "Water the plants",
             "Get car washed",

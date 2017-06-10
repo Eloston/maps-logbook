@@ -1,4 +1,4 @@
-package com.example.avjindersinghsekhon.minimaltodo;
+package com.github.eloston.mapslogbook;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package com.example.avjindersinghsekhon.minimaltodo;
+package com.github.eloston.mapslogbook;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +31,7 @@ public class ReminderActivity extends AppCompatActivity{
     private StoreRetrieveData storeRetrieveData;
     private ArrayList<ToDoItem> mToDoItems;
     private ToDoItem mItem;
-    public static final String EXIT = "com.avjindersekhon.exit";
+    public static final String EXIT = "com.github.eloston.exit";
     private TextView mSnoozeTextView;
     String theme;
 

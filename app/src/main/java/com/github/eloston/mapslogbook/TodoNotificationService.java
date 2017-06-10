@@ -1,4 +1,4 @@
-package com.example.avjindersinghsekhon.minimaltodo;
+package com.github.eloston.mapslogbook;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -11,8 +11,8 @@ import android.util.Log;
 import java.util.UUID;
 
 public class TodoNotificationService extends IntentService {
-    public static final String TODOTEXT = "com.avjindersekhon.todonotificationservicetext";
-    public static final String TODOUUID = "com.avjindersekhon.todonotificationserviceuuid";
+    public static final String TODOTEXT = "com.github.eloston.todonotificationservicetext";
+    public static final String TODOUUID = "com.github.eloston.todonotificationserviceuuid";
     private String mTodoText;
     private UUID mTodoUUID;
     private Context mContext;
