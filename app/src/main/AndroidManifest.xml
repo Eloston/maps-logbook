@@ -34,14 +34,6 @@
             android:parentActivityName=".MainActivity"
             />
 
-        <activity android:name=".ReminderActivity"
-            android:label="@string/app_name"
-            />
-
-        <service android:name=".TodoNotificationService"
-            />
-        <service android:name=".DeleteNotificationService"
-            />
         <activity android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
 

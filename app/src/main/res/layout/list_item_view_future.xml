@@ -42,16 +42,6 @@
                 android:layout_weight="1"
                 android:layout_height="0dp"
                 />
-
-            <TextView
-                android:id="@+id/todoListItemTimeTextView"
-                android:padding="8dp"
-                android:textColor="?attr/colorAccent"
-                android:textSize="12sp"
-                android:gravity="start|bottom"
-                android:layout_weight=".8"
-                android:layout_width="match_parent"
-                android:layout_height="0dp" />
         </LinearLayout>
 
         <ImageView
