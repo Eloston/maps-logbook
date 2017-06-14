@@ -32,7 +32,7 @@ public class AddToDoActivity extends AppCompatActivity {
     private ToDoItem mUserToDoItem;
     private FloatingActionButton mToDoSendFloatingActionButton;
 
-    private String mUserEnteredText;
+    private String mEnteredName;
     private Toolbar mToolbar;
     private int mUserColor;
     private String theme;
@@ -54,7 +54,7 @@ public class AddToDoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_add_to_do);
         //Testing out a new layout
-        setContentView(R.layout.activity_todo_test);
+        setContentView(R.layout.activity_add_entry);
 
         //Show an X in place of <-
         final Drawable cross = getResources().getDrawable(R.drawable.ic_clear_white_24dp);
@@ -76,7 +76,7 @@ public class AddToDoActivity extends AppCompatActivity {
 
         mUserToDoItem = (ToDoItem)getIntent().getSerializableExtra(MainActivity.TODOITEM);
 
-        mUserEnteredText = mUserToDoItem.getToDoText();
+        mEnteredName = mUserToDoItem.getToDoText();
         mUserColor = mUserToDoItem.getTodoColor();
 
 
@@ -87,14 +87,14 @@ public class AddToDoActivity extends AppCompatActivity {
 //            mLastEdited = mUserToDoItem.getLastEdited();
 //        }
 
-        mToDoTextBodyEditText = (EditText)findViewById(R.id.userToDoEditText);
+        mToDoTextBodyEditText = (EditText)findViewById(R.id.entryNameEditText);
 //        mLastSeenTextView = (TextView)findViewById(R.id.toDoLastEditedTextView);
-        mToDoSendFloatingActionButton = (FloatingActionButton)findViewById(R.id.makeToDoFloatingActionButton);
+        mToDoSendFloatingActionButton = (FloatingActionButton)findViewById(R.id.saveEntryFloatingActionButton);
 
 //        TextInputLayout til = (TextInputLayout)findViewById(R.id.toDoCustomTextInput);
 //        til.requestFocus();
         mToDoTextBodyEditText.requestFocus();
-        mToDoTextBodyEditText.setText(mUserEnteredText);
+        mToDoTextBodyEditText.setText(mEnteredName);
         InputMethodManager imm = (InputMethodManager)this.getSystemService(INPUT_METHOD_SERVICE);
 //        imm.showSoftInput(mToDoTextBodyEditText, InputMethodManager.SHOW_IMPLICIT);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -104,18 +104,15 @@ public class AddToDoActivity extends AppCompatActivity {
         mToDoTextBodyEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mUserEnteredText = s.toString();
-
+                mEnteredName = s.toString();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -127,8 +124,8 @@ public class AddToDoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                if (mToDoTextBodyEditText.length() <= 0){
-                    mToDoTextBodyEditText.setError(getString(R.string.todo_error));
-                }
+                    mToDoTextBodyEditText.setError(getString(R.string.field_required_error));
+                } // TODO: Check length of URL field, and then check if it's a valid URL
                 else{
                     makeResult(RESULT_OK);
                     finish();
@@ -208,13 +205,13 @@ public class AddToDoActivity extends AppCompatActivity {
 
     public void makeResult(int result){
         Intent i = new Intent();
-        if(mUserEnteredText.length()>0){
+        if(mEnteredName.length()>0){
 
-            String capitalizedString = Character.toUpperCase(mUserEnteredText.charAt(0))+mUserEnteredText.substring(1);
+            String capitalizedString = Character.toUpperCase(mEnteredName.charAt(0))+mEnteredName.substring(1);
             mUserToDoItem.setToDoText(capitalizedString);
         }
         else{
-            mUserToDoItem.setToDoText(mUserEnteredText);
+            mUserToDoItem.setToDoText(mEnteredName);
         }
 //        mUserToDoItem.setLastEdited(mLastEdited);
         mUserToDoItem.setTodoColor(mUserColor);
