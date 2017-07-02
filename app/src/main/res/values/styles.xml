@@ -6,6 +6,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowActionBar">false</item>
     </style>
+
     <style name="CustomStyle" parent="Theme.AppCompat.NoActionBar">
         <item name="colorAccent">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
@@ -14,20 +15,9 @@
         <item name="colorSwitchThumbNormal">@color/grey300</item>
         <!--Inactive track color-->
         <item name="android:colorForeground">@color/grey600</item>
-
     </style>
 
-    <!--<style name="AnotherCustomStyle" parent="Theme.AppCompat.Light.NoActionBar">-->
-        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
-        <!--<item name="colorAccent">@color/accent</item>-->
-        <!--<item name="colorPrimaryDark">@color/primary_dark</item>-->
-        <!--<item name="android:windowActionBar">false</item>-->
-        <!--<item name="colorPrimary">@color/primary</item>-->
-    <!--</style>-->
-
-
     <style name="CustomStyle.DarkTheme" parent="Theme.AppCompat">
-
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorAccent">@color/amber</item>
@@ -45,7 +35,6 @@
 
     <style name="OverflowThreeDotsWhite" parent="Widget.AppCompat.Light.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_menu_overflow_light</item>
-
     </style>
 
 
@@ -56,15 +45,13 @@
     <!--Change color of title on Toolbar-->
     <style name="ToolbarTitleTextAppearanceLight" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/white</item>
-
     </style>
+
     <style name="ToolbarTitleTextAppearanceDark" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/amber</item>
-
     </style>
 
     <style name="CustomStyle.LightTheme" parent="Theme.AppCompat.Light">
-
         <item name="actionOverflowButtonStyle">@style/OverflowThreeDotsWhite</item>
         <item name="toolbarStyle">@style/ToolBarTheme</item>
         <item name="popupMenuStyle">@style/PopupMenuLight</item>
@@ -77,17 +64,14 @@
         <item name="colorSwitchThumbNormal">@color/grey300</item>
         <!--Inactive track color-->
         <item name="android:colorForeground">@color/grey600</item>
-
     </style>
 
     <style name="CustomToolbar" parent="Widget.AppCompat.ActionBar">
         <item name="theme">@style/CustomToolbarTheme</item>
-
     </style>
 
     <style name="CustomToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/secondary_text</item>
-
     </style>
 
 
@@ -110,26 +94,19 @@
         <item name="colorSwitchThumbNormal">@color/amber</item>
         <!--Inactive track color-->
         <item name="android:colorForeground">@color/secondary_text</item>
-
-
     </style>
 
     <style name="myToolBarStyle" parent="@style/Widget.AppCompat.Toolbar">
         <item name="android:paddingRight">32dp</item>
     </style>
 
-    <!--<style name="RobotoTextViewStyle"-->
-        <!--parent="android:Widget.TextView">-->
-        <!--<item name="android:fontFamily">sans-serif-bold</item>-->
-    <!--</style>-->
-    
+    <style name="FloatingInputLabel" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
     <style name="FloatingLabelTextAppearance" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@android:color/white</item>
     </style>
-
-    <!--<style name="UnderlineSpinner" parent="@style/ThemeOverlay.AppCompat.ActionBar">-->
-        <!--<item name="android:spinnerStyle">?android:attr/spinnerItemStyle</item>-->
-
-    <!--</style>-->
-
 </resources>

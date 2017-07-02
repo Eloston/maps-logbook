@@ -15,7 +15,6 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +23,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AddToDoActivity"
-            android:screenOrientation="portrait"
+        <activity android:name=".AddEntryActivity"
             android:parentActivityName=".MainActivity"
             />
 

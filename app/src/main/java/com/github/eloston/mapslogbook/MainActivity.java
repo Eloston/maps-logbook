@@ -3,84 +3,66 @@ package com.github.eloston.mapslogbook;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerViewEmptySupport mRecyclerView;
-    private FloatingActionButton mAddToDoItemFAB;
-    private ArrayList<ToDoItem> mToDoItemsArrayList;
-    private CoordinatorLayout mCoordLayout;
-    public static final String TODOITEM = "com.github.eloston.com.github.eloston.mapslogbook.MainActivity";
+    private RecyclerViewEmptySupport recyclerView;
+    private ArrayList<Entry> entriesArrayList;
+    private CoordinatorLayout coordLayout;
+    public static final String ENTRY_EXTRA = "com.github.eloston.mapslogbook.MainActivity.entry";
+    public static final String ENTRY_NEW_EXTRA = "com.github.eloston.mapslogbook.MainActivity.entry_new";
     private BasicListAdapter adapter;
-    private static final int REQUEST_ID_TODO_ITEM = 100;
-    private ToDoItem mJustDeletedToDoItem;
-    private int mIndexOfDeletedToDoItem;
-    public static final String FILENAME = "todoitems.json";
+    public static final int REQUEST_ID_ENTRY = 100;
+    public static final String FILENAME = "entries.json";
     private StoreRetrieveData storeRetrieveData;
-    public ItemTouchHelper itemTouchHelper;
     private CustomRecyclerScrollViewListener customRecyclerScrollViewListener;
     public static final String SHARED_PREF_DATA_SET_CHANGED = "com.github.eloston.datasetchanged";
     public static final String CHANGE_OCCURED = "com.github.eloston.changeoccured";
-    private int mTheme = -1;
-    private String theme = "name_of_the_theme";
     public static final String THEME_PREFERENCES = "com.github.eloston.themepref";
     public static final String RECREATE_ACTIVITY = "com.github.eloston.recreateactivity";
     public static final String THEME_SAVED = "com.github.eloston.savedtheme";
     public static final String DARKTHEME = "com.github.eloston.darktheme";
     public static final String LIGHTTHEME = "com.github.eloston.lighttheme";
 
-    public static ArrayList<ToDoItem> getLocallyStoredData(StoreRetrieveData storeRetrieveData){
-        ArrayList<ToDoItem> items = null;
+    public static ArrayList<Entry> getLocallyStoredData(StoreRetrieveData storeRetrieveData){
+        ArrayList<Entry> entries = null;
 
         try {
-            items  = storeRetrieveData.loadFromFile();
-
+            entries  = storeRetrieveData.loadFromFile();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 
-        if(items == null){
-            items = new ArrayList<>();
+        if (entries == null) {
+            entries = new ArrayList<>();
         }
-        return items;
-
+        return entries;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(this.SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
         /*
         We need to do this, as this activity's onCreate won't be called when coming back from SettingsActivity,
         thus our changes to dark/light mode won't take place, as the setContentView() is not called again.
@@ -92,215 +74,133 @@ public class MainActivity extends AppCompatActivity {
         and get an ANR
 
          */
-        if(getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE).getBoolean(RECREATE_ACTIVITY, false)){
-            SharedPreferences.Editor editor = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE).edit();
-            editor.putBoolean(RECREATE_ACTIVITY, false);
+        if (this.getSharedPreferences(this.THEME_PREFERENCES, MODE_PRIVATE).getBoolean(this.RECREATE_ACTIVITY, false)) {
+            SharedPreferences.Editor editor = this.getSharedPreferences(this.THEME_PREFERENCES, MODE_PRIVATE).edit();
+            editor.putBoolean(this.RECREATE_ACTIVITY, false);
             editor.apply();
-            recreate();
+            this.recreate();
         }
-
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
-        if(sharedPreferences.getBoolean(CHANGE_OCCURED, false)){
-
-            mToDoItemsArrayList = getLocallyStoredData(storeRetrieveData);
-            adapter = new BasicListAdapter(mToDoItemsArrayList);
-            mRecyclerView.setAdapter(adapter);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(this.SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
+        if (sharedPreferences.getBoolean(this.CHANGE_OCCURED, false)) {
+            this.entriesArrayList = getLocallyStoredData(this.storeRetrieveData);
+            this.adapter = new BasicListAdapter(this, this.entriesArrayList, this.coordLayout);
+            this.recyclerView.setAdapter(this.adapter);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(CHANGE_OCCURED, false);
-//            editor.commit();
+            editor.putBoolean(this.CHANGE_OCCURED, false);
             editor.apply();
-
-
         }
     }
 
     protected void onCreate(Bundle savedInstanceState) {
-//        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-//                .setDefaultFontPath("fonts/Aller_Regular.tff").setFontAttrId(R.attr.fontPath).build());
-
         //We recover the theme we've set and setTheme accordingly
-        theme = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE).getString(THEME_SAVED, LIGHTTHEME);
+        String theme = this.getSharedPreferences(this.THEME_PREFERENCES, MODE_PRIVATE).getString(this.THEME_SAVED, this.LIGHTTHEME);
 
-        if(theme.equals(LIGHTTHEME)){
-            mTheme = R.style.CustomStyle_LightTheme;
+        if (theme.equals(this.LIGHTTHEME)) {
+            this.setTheme(R.style.CustomStyle_LightTheme);
         }
-        else{
-            mTheme = R.style.CustomStyle_DarkTheme;
+        else {
+            this.setTheme(R.style.CustomStyle_DarkTheme);
         }
-        this.setTheme(mTheme);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        this.setContentView(R.layout.activity_main);
 
-
-
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_DATA_SET_CHANGED, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(this.SHARED_PREF_DATA_SET_CHANGED, this.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(CHANGE_OCCURED, false);
+        editor.putBoolean(this.CHANGE_OCCURED, false);
         editor.apply();
 
-        storeRetrieveData = new StoreRetrieveData(this, FILENAME);
-        mToDoItemsArrayList =  getLocallyStoredData(storeRetrieveData);
-        adapter = new BasicListAdapter(mToDoItemsArrayList);
-
-
-//        adapter.notifyDataSetChanged();
-//        storeRetrieveData = new StoreRetrieveData(this, FILENAME);
-//
-//        try {
-//            mToDoItemsArrayList = storeRetrieveData.loadFromFile();
-////            Log.d("OskarSchindler", "Arraylist Length: "+mToDoItemsArrayList.size());
-//        } catch (IOException | JSONException e) {
-////            Log.d("OskarSchindler", "IOException received");
-//            e.printStackTrace();
-//        }
-//
-//        if(mToDoItemsArrayList==null){
-//            mToDoItemsArrayList = new ArrayList<>();
-//        }
-//
-
-//        mToDoItemsArrayList = new ArrayList<>();
-//        makeUpItems(mToDoItemsArrayList, testStrings.length);
+        this.storeRetrieveData = new StoreRetrieveData(this, this.FILENAME);
+        this.entriesArrayList =  getLocallyStoredData(this.storeRetrieveData);
 
         final android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        this.setSupportActionBar(toolbar);
 
+        this.coordLayout = (CoordinatorLayout)findViewById(R.id.myCoordinatorLayout);
+        final FloatingActionButton addEntryFAB = (FloatingActionButton)findViewById(R.id.addEntryFAB);
 
-
-        mCoordLayout = (CoordinatorLayout)findViewById(R.id.myCoordinatorLayout);
-        mAddToDoItemFAB = (FloatingActionButton)findViewById(R.id.addToDoItemFAB);
-
-        mAddToDoItemFAB.setOnClickListener(new View.OnClickListener() {
-
-            @SuppressWarnings("deprecation")
+        addEntryFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newTodo = new Intent(MainActivity.this, AddToDoActivity.class);
-                ToDoItem item = new ToDoItem("");
+                Intent newEntry = new Intent(MainActivity.this, AddEntryActivity.class);
+                Entry entry = new Entry();
                 int color = ColorGenerator.MATERIAL.getRandomColor();
-                item.setTodoColor(color);
-                //noinspection ResourceType
-//                String color = getResources().getString(R.color.primary_ligher);
-                newTodo.putExtra(TODOITEM, item);
-//                View decorView = getWindow().getDecorView();
-//                View navView= decorView.findViewById(android.R.id.navigationBarBackground);
-//                View statusView = decorView.findViewById(android.R.id.statusBarBackground);
-//                Pair<View, String> navBar ;
-//                if(navView!=null){
-//                    navBar = Pair.create(navView, navView.getTransitionName());
-//                }
-//                else{
-//                    navBar = null;
-//                }
-//                Pair<View, String> statusBar= Pair.create(statusView, statusView.getTransitionName());
-//                ActivityOptions options;
-//                if(navBar!=null){
-//                    options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, navBar, statusBar);
-//                }
-//                else{
-//                    options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, statusBar);
-//                }
-
-//                startActivity(new Intent(MainActivity.this, TestLayout.class), options.toBundle());
-//                startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM, options.toBundle());
-
-                startActivityForResult(newTodo, REQUEST_ID_TODO_ITEM);
+                entry.setColor(color);
+                newEntry.putExtra(MainActivity.this.ENTRY_EXTRA, entry);
+                newEntry.putExtra(MainActivity.this.ENTRY_NEW_EXTRA, true);
+                MainActivity.this.startActivityForResult(newEntry, MainActivity.this.REQUEST_ID_ENTRY);
             }
         });
 
-
-//        mRecyclerView = (RecyclerView)findViewById(R.id.toDoRecyclerView);
-        mRecyclerView = (RecyclerViewEmptySupport)findViewById(R.id.toDoRecyclerView);
-        if(theme.equals(LIGHTTHEME)){
-            mRecyclerView.setBackgroundColor(getResources().getColor(R.color.primary_lightest));
+        this.recyclerView = (RecyclerViewEmptySupport)findViewById(R.id.entryRecyclerView);
+        if (theme.equals(LIGHTTHEME)) {
+            this.recyclerView.setBackgroundColor(this.getResources().getColor(R.color.primary_lightest));
         }
-        mRecyclerView.setEmptyView(findViewById(R.id.toDoEmptyView));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.recyclerView.setEmptyView(findViewById(R.id.toDoEmptyView));
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setItemAnimator(new DefaultItemAnimator());
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-
-        customRecyclerScrollViewListener = new CustomRecyclerScrollViewListener() {
+        this.customRecyclerScrollViewListener = new CustomRecyclerScrollViewListener() {
             @Override
             public void show() {
 
-                mAddToDoItemFAB.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
-//                mAddToDoItemFAB.animate().translationY(0).setInterpolator(new AccelerateInterpolator(2.0f)).start();
+                addEntryFAB.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
 
             @Override
             public void hide() {
 
-                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)mAddToDoItemFAB.getLayoutParams();
+                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams)addEntryFAB.getLayoutParams();
                 int fabMargin = lp.bottomMargin;
-                mAddToDoItemFAB.animate().translationY(mAddToDoItemFAB.getHeight()+fabMargin).setInterpolator(new AccelerateInterpolator(2.0f)).start();
+                addEntryFAB.animate().translationY(addEntryFAB.getHeight()+fabMargin).setInterpolator(new AccelerateInterpolator(2.0f)).start();
             }
         };
-        mRecyclerView.addOnScrollListener(customRecyclerScrollViewListener);
+        this.recyclerView.addOnScrollListener(this.customRecyclerScrollViewListener);
 
+        this.adapter = new BasicListAdapter(this, this.entriesArrayList, this.coordLayout);
 
-        ItemTouchHelper.Callback callback = new ItemTouchHelperClass(adapter);
-        itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        ItemTouchHelper.Callback callback = new ItemTouchHelperClass(this.adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(this.recyclerView);
 
-
-        mRecyclerView.setAdapter(adapter);
-//        setUpTransitions();
+        this.recyclerView.setAdapter(this.adapter);
 
 
 
     }
 
-    public void addThemeToSharedPreferences(String theme){
-        SharedPreferences sharedPreferences = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE);
+    public void addThemeToSharedPreferences(String theme) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences(this.THEME_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(THEME_SAVED, theme);
+        editor.putString(this.THEME_SAVED, theme);
         editor.apply();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        Intent intent;
+        switch (item.getItemId()) {
             case R.id.aboutMeMenuItem:
-                Intent i = new Intent(this, AboutActivity.class);
-                startActivity(i);
+                intent = new Intent(this, AboutActivity.class);
+                this.startActivity(intent);
                 return true;
-//            case R.id.switch_themes:
-//                if(mTheme == R.style.CustomStyle_DarkTheme){
-//                    addThemeToSharedPreferences(LIGHTTHEME);
-//                }
-//                else{
-//                    addThemeToSharedPreferences(DARKTHEME);
-//                }
-//
-////                if(mTheme == R.style.CustomStyle_DarkTheme){
-////                    mTheme = R.style.CustomStyle_LightTheme;
-////                }
-////                else{
-////                    mTheme = R.style.CustomStyle_DarkTheme;
-////                }
-//                this.recreate();
-//                return true;
             case R.id.preferences:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                intent = new Intent(this, SettingsActivity.class);
+                this.startActivity(intent);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -308,214 +208,52 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode!= RESULT_CANCELED && requestCode == REQUEST_ID_TODO_ITEM){
-            ToDoItem item =(ToDoItem) data.getSerializableExtra(TODOITEM);
-            if(item.getToDoText().length()<=0){
+        if (resultCode != RESULT_CANCELED && requestCode == this.REQUEST_ID_ENTRY) {
+            Entry entry = (Entry)data.getSerializableExtra(this.ENTRY_EXTRA);
+            if (entry.getName().length() <= 0) {
                 return;
             }
-            boolean existed = false;
 
-            for(int i = 0; i<mToDoItemsArrayList.size();i++){
-                if(item.getIdentifier().equals(mToDoItemsArrayList.get(i).getIdentifier())){
-                    mToDoItemsArrayList.set(i, item);
+            boolean existed = false;
+            for (int i = 0; i < this.entriesArrayList.size(); i++) {
+                if (entry.getIdentifier().equals(this.entriesArrayList.get(i).getIdentifier())) {
+                    this.entriesArrayList.set(i, entry);
                     existed = true;
-                    adapter.notifyDataSetChanged();
+                    this.adapter.notifyDataSetChanged();
                     break;
                 }
             }
-            if(!existed) {
-                addToDataStore(item);
+            if (!existed) {
+                addToDataStore(entry);
             }
-
-
         }
     }
 
-    private boolean doesPendingIntentExist(Intent i, int requestCode){
-        PendingIntent pi = PendingIntent.getService(this,requestCode, i, PendingIntent.FLAG_NO_CREATE);
-        return pi!=null;
+    private boolean doesPendingIntentExist(Intent i, int requestCode) {
+        PendingIntent pi = PendingIntent.getService(this, requestCode, i, PendingIntent.FLAG_NO_CREATE);
+        return pi != null;
     }
 
-    private void addToDataStore(ToDoItem item){
-        mToDoItemsArrayList.add(item);
-        adapter.notifyItemInserted(mToDoItemsArrayList.size() - 1);
-
+    private void addToDataStore(Entry entry) {
+        this.entriesArrayList.add(entry);
+        this.adapter.notifyItemInserted(this.entriesArrayList.size() - 1);
     }
-
-    public class BasicListAdapter extends RecyclerView.Adapter<BasicListAdapter.ViewHolder> implements ItemTouchHelperClass.ItemTouchHelperAdapter{
-        private ArrayList<ToDoItem> items;
-
-        @Override
-        public void onItemMoved(int fromPosition, int toPosition) {
-           if(fromPosition<toPosition){
-               for(int i=fromPosition; i<toPosition; i++){
-                   Collections.swap(items, i, i+1);
-               }
-           }
-            else{
-               for(int i=fromPosition; i > toPosition; i--){
-                   Collections.swap(items, i, i-1);
-               }
-           }
-            notifyItemMoved(fromPosition, toPosition);
-        }
-
-        @Override
-        public void onItemRemoved(final int position) {
-            mJustDeletedToDoItem =  items.remove(position);
-            mIndexOfDeletedToDoItem = position;
-            notifyItemRemoved(position);
-
-//            String toShow = (mJustDeletedToDoItem.getToDoText().length()>20)?mJustDeletedToDoItem.getToDoText().substring(0, 20)+"...":mJustDeletedToDoItem.getToDoText();
-            String toShow = "Todo";
-            Snackbar.make(mCoordLayout, "Deleted "+toShow,Snackbar.LENGTH_SHORT)
-                    .setAction("UNDO", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            items.add(mIndexOfDeletedToDoItem, mJustDeletedToDoItem);
-                            notifyItemInserted(mIndexOfDeletedToDoItem);
-                        }
-                    }).show();
-        }
-
-        @Override
-        public BasicListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_circle_try, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(final BasicListAdapter.ViewHolder holder, final int position) {
-            ToDoItem item = items.get(position);
-//            if(item.getToDoDate()!=null && item.getToDoDate().before(new Date())){
-//                item.setToDoDate(null);
-//            }
-            SharedPreferences sharedPreferences = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE);
-            //Background color for each to-do item. Necessary for night/day mode
-            int bgColor;
-            //color of title text in our to-do item. White for night mode, dark gray for day mode
-            int todoTextColor;
-            if(sharedPreferences.getString(THEME_SAVED, LIGHTTHEME).equals(LIGHTTHEME)){
-                bgColor = Color.WHITE;
-                todoTextColor = getResources().getColor(R.color.secondary_text);
-            }
-            else{
-                bgColor = Color.DKGRAY;
-                todoTextColor = Color.WHITE;
-            }
-            holder.linearLayout.setBackgroundColor(bgColor);
-
-            holder.mToDoTextview.setMaxLines(2);
-
-            holder.mToDoTextview.setText(item.getToDoText());
-            holder.mToDoTextview.setTextColor(todoTextColor);
-//            holder.mColorTextView.setBackgroundColor(Color.parseColor(item.getTodoColor()));
-
-//            TextDrawable myDrawable = TextDrawable.builder().buildRoundRect(item.getToDoText().substring(0,1),Color.RED, 10);
-            //We check if holder.color is set or not
-//            if(item.getTodoColor() == null){
-//                ColorGenerator generator = ColorGenerator.MATERIAL;
-//                int color = generator.getRandomColor();
-//                item.setTodoColor(color+"");
-//            }
-//            Log.d("OskarSchindler", "Color: "+item.getTodoColor());
-            TextDrawable myDrawable = TextDrawable.builder().beginConfig()
-                    .textColor(Color.WHITE)
-                    .useFont(Typeface.DEFAULT)
-                    .toUpperCase()
-                    .endConfig()
-                    .buildRound(item.getToDoText().substring(0,1),item.getTodoColor());
-
-//            TextDrawable myDrawable = TextDrawable.builder().buildRound(item.getToDoText().substring(0,1),holder.color);
-            holder.mColorImageView.setImageDrawable(myDrawable);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return items.size();
-        }
-
-        BasicListAdapter(ArrayList<ToDoItem> items){
-
-            this.items = items;
-        }
-
-
-        @SuppressWarnings("deprecation")
-        public class ViewHolder extends RecyclerView.ViewHolder{
-
-            View mView;
-            LinearLayout linearLayout;
-            TextView mToDoTextview;
-//            TextView mColorTextView;
-            ImageView mColorImageView;
-//            int color = -1;
-
-            public ViewHolder(View v){
-                super(v);
-                mView = v;
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ToDoItem item = items.get(ViewHolder.this.getAdapterPosition());
-                        Intent i = new Intent(MainActivity.this, AddToDoActivity.class);
-                        i.putExtra(TODOITEM, item);
-                        startActivityForResult(i, REQUEST_ID_TODO_ITEM);
-                    }
-                });
-                mToDoTextview = (TextView)v.findViewById(R.id.toDoListItemTextview);
-//                mColorTextView = (TextView)v.findViewById(R.id.toDoColorTextView);
-                mColorImageView = (ImageView)v.findViewById(R.id.toDoListItemColorImageView);
-                linearLayout = (LinearLayout)v.findViewById(R.id.listItemLinearLayout);
-            }
-
-
-        }
-    }
-
-    //Used when using custom fonts
-//    @Override
-//    protected void attachBaseContext(Context newBase) {
-//        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-//    }
 
     @Override
     protected void onPause() {
         super.onPause();
         try {
-            storeRetrieveData.saveToFile(mToDoItemsArrayList);
+            this.storeRetrieveData.saveToFile(this.entriesArrayList);
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
 
-
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
-        mRecyclerView.removeOnScrollListener(customRecyclerScrollViewListener);
+        this.recyclerView.removeOnScrollListener(this.customRecyclerScrollViewListener);
     }
-
-
-//    public void setUpTransitions(){
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-//            Transition enterT = new Slide(Gravity.RIGHT);
-//            enterT.setDuration(500);
-//
-//            Transition exitT = new Slide(Gravity.LEFT);
-//            exitT.setDuration(300);
-//
-//            Fade fade = new Fade();
-//            fade.setDuration(500);
-//
-//            getWindow().setExitTransition(fade);
-//            getWindow().setReenterTransition(fade);
-//
-//        }
-//    }
-
 }
 
 

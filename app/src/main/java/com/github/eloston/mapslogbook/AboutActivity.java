@@ -16,42 +16,34 @@ import android.widget.TextView;
 
 public class AboutActivity extends AppCompatActivity {
     private TextView mVersionTextView;
-    private String appVersion = "0.1";
+    private String appVersion = "???";
     private Toolbar toolbar;
     String theme;
-//    private UUID mId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         theme = getSharedPreferences(MainActivity.THEME_PREFERENCES, MODE_PRIVATE).getString(MainActivity.THEME_SAVED, MainActivity.LIGHTTHEME);
-        if(theme.equals(MainActivity.DARKTHEME)){
-            Log.d("OskarSchindler", "One");
-            setTheme(R.style.CustomStyle_DarkTheme);
-        }
-        else{
-            Log.d("OskarSchindler", "One");
-            setTheme(R.style.CustomStyle_LightTheme);
+        if (theme.equals(MainActivity.DARKTHEME)) {
+            this.setTheme(R.style.CustomStyle_DarkTheme);
+        } else{
+            this.setTheme(R.style.CustomStyle_LightTheme);
         }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_layout);
         
         Intent i = getIntent();
-//        mId = (UUID)i.getSerializableExtra(TodoNotificationService.TODOUUID);
 
         final Drawable backArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        if(backArrow!=null){
+        if (backArrow != null) {
             backArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-
         }
-        try{
+        try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
-            appVersion = info.versionName;
-        }
-        catch (Exception e){
+            this.appVersion = info.versionName;
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         mVersionTextView = (TextView)findViewById(R.id.aboutVersionTextView);
         mVersionTextView.setText(String.format(getResources().getString(R.string.app_version), appVersion));
@@ -66,9 +58,9 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
-                if(NavUtils.getParentActivityName(this)!=null){
+                if (NavUtils.getParentActivityName(this) != null) {
                     NavUtils.navigateUpFromSameTask(this);
                 }
                 return true;
